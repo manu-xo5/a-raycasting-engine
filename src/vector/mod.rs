@@ -9,6 +9,10 @@ impl Vector2 {
         Vector2 { x, y }
     }
 
+    pub fn from_angle(degs: f64) -> Vector2 {
+        Vector2::new(degs.to_radians().cos(), degs.to_radians().sin() * -1.0)
+    }
+
     pub fn add(&self, v: &Vector2) -> Vector2 {
         Vector2::new(&self.x + v.x, &self.y + v.y)
     }
@@ -17,12 +21,8 @@ impl Vector2 {
         Vector2::new(&self.x - v.x, &self.y - v.y)
     }
 
-    pub fn mul(&self, v: &Vector2) -> Vector2 {
-        Vector2::new(&self.x * v.x, &self.y * v.y)
-    }
-
-    pub fn div(&self, v: &Vector2) -> Vector2 {
-        Vector2::new(&self.x / v.x, &self.y / v.y)
+    pub fn dot(&self, v: &Vector2) -> f64 {
+        (&self.x * v.x) + (&self.y * v.y)
     }
 
     pub fn scale(&self, x: f64) -> Vector2 {
@@ -30,14 +30,15 @@ impl Vector2 {
     }
 
     pub fn length(&self) -> f64 {
-       (&self.x * &self.x + &self.y * &self.y).sqrt()
+        (&self.x * &self.x + &self.y * &self.y).sqrt()
     }
+
     pub fn norm(&self) -> Vector2 {
         let l = self.length();
         Vector2::new(&self.x / l, &self.y / l)
     }
 
-    pub fn distanceTo(&self, v: &Vector2) -> f64 {
+    pub fn distance_to(&self, v: &Vector2) -> f64 {
         self.sub(v).length()
     }
 }

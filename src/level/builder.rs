@@ -22,7 +22,7 @@ impl Builder {
     }
 
     pub fn load() -> Vec<Coord> {
-        let mut file = File::open("foo.txt").unwrap();
+        let mut file = File::open("fooBAK.txt").unwrap();
         let mut data = String::new();
 
         file.read_to_string(&mut data).unwrap();

@@ -4,6 +4,10 @@ use sdl2::pixels::Color;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
+pub const CELL: f64 = 20.0;
+pub const SCREEN_W: f64 = 800.0;
+pub const SCREEN_H: f64 = 600.0;
+
 pub mod builder;
 
 pub struct Level {
@@ -21,8 +25,8 @@ impl Level {
 
 #[derive(Clone, Copy)]
 pub struct Object {
-    id: &'static str,
-    position: Vector2,
+    pub id: &'static str,
+    pub position: Vector2,
 }
 
 impl Object {
@@ -41,10 +45,14 @@ impl Object {
     }
 
     pub fn is_at(point: &Vector2, object: &Object) -> Option<Vector2> {
-        let x = (point.x.clone() as i32) >> 6 << 6;
-        let y = (point.y.clone() as i32) >> 6 << 6;
+        let x = (point.x.clone() / CELL) * CELL;
+        let y = (point.y.clone() / CELL) * CELL;
 
-        if x == object.position.x as i32 && y == object.position.y as i32 {
+        if x >= object.position.x
+            && x <= object.position.x + CELL
+            && y >= object.position.y
+            && y <= object.position.y + CELL
+        {
             Some(object.position.to_owned())
         } else {
             None

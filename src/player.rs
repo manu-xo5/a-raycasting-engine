@@ -3,7 +3,8 @@ use sdl2::keyboard::Keycode;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 
-use crate::draw; use crate::vector::Vector2;
+use crate::draw;
+use crate::vector::Vector2;
 pub struct Player {
     pub position: Vector2,
     pub accel: u8,
@@ -30,6 +31,11 @@ impl Player {
                 keycode: Some(Keycode::W),
                 ..
             } => self.move_forward(),
+
+            Event::KeyDown {
+                keycode: Some(Keycode::S),
+                ..
+            } => self.move_backward(),
 
             Event::KeyDown {
                 keycode: Some(Keycode::D),
@@ -68,6 +74,11 @@ impl Player {
             20,
             canvas,
         );
+
+        let l = Vector2::from_angle(self.angle - 90.0).scale(50.0).add(&self.position);
+        let r = Vector2::from_angle(self.angle + 90.0).scale(50.0).add(&self.position);
+        canvas.set_draw_color((25, 25, 255));
+        draw::line(&l, &r, canvas);
     }
 
     fn start_accel(&mut self) {
@@ -84,13 +95,32 @@ impl Player {
     fn strafe_left(&mut self) {
         self.start_accel();
 
-        self.position.x -= self.accel as f64;
+        let new_p = self
+            .position
+            .sub(&Vector2::from_angle(self.angle - 90.0).scale(self.accel as f64));
+
+        self.position.x = new_p.x;
+        self.position.y = new_p.y;
     }
 
     fn strafe_right(&mut self) {
         self.start_accel();
 
-        self.position.x += self.accel as f64;
+        let new_p = self
+            .position
+            .sub(&Vector2::from_angle(self.angle + 90.0).scale(self.accel as f64));
+        self.position.x = new_p.x;
+        self.position.y = new_p.y;
+    }
+
+    fn move_backward(&mut self) {
+        self.start_accel();
+
+        let new_p = self
+            .position
+            .sub(&Vector2::from_angle(self.angle).scale(self.accel as f64));
+        self.position.x = new_p.x;
+        self.position.y = new_p.y;
     }
 
     fn move_forward(&mut self) {
